@@ -3,7 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏗️ FitOut Engineering & Construction - Quotation System V2.2</title>
+    <meta name="robots" content="noindex,nofollow">
+    <!-- PWA (phone app) wrapper -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1E2568">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="FitOut Quotes">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <title>🏗️ FitOut Engineering & Construction - Quotation System V2.9</title>
     <style>
         * {
             margin: 0;
@@ -256,6 +266,25 @@
         .btn-success { background: #28a745; color: white; }
         .btn-danger { background: #dc3545; color: white; }
         .btn-warning { background: #ffc107; color: #333; }
+        /* V2.9: Optional Site Photos (same as INDesign V127, FitOut colours) */
+        .site-photos-card { border: 2px dashed #9fa8da; border-radius: 12px; padding: 18px; margin: 20px 0; background: #f5f7ff; }
+        .site-photos-card h3 { margin: 0 0 4px; color: #1E2568; font-size: 18px; }
+        .site-photos-card .sp-hint { margin: 0 0 14px; color: #666; font-size: 13px; }
+        .site-photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 600px; }
+        .sp-slot { display: flex; flex-direction: column; gap: 6px; }
+        .sp-box { position: relative; width: 100%; aspect-ratio: 1 / 1; border-radius: 10px; overflow: hidden; background: #fff; border: 2px solid #c5cae9; }
+        .sp-box img { width: 100%; height: 100%; object-fit: contain; display: block; background: #fff; }
+        .sp-empty { display: flex; align-items: center; justify-content: center; flex-direction: column; color: #7986cb; cursor: pointer; font-size: 13px; text-align: center; border-style: dashed; }
+        .sp-empty:hover { background: #fff4e6; color: #F39200; }
+        .sp-empty span { font-size: 30px; line-height: 1; margin-bottom: 4px; }
+        .sp-remove { position: absolute; top: 6px; right: 6px; width: 28px; height: 28px; border-radius: 50%; border: none; background: rgba(0,0,0,0.6); color: #fff; font-size: 15px; cursor: pointer; line-height: 28px; padding: 0; }
+        .sp-num { position: absolute; top: 6px; left: 6px; background: rgba(30,37,104,0.85); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+        .sp-caption { width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; box-sizing: border-box; }
+        @media (max-width: 600px) {
+            .site-photos-grid { grid-template-columns: repeat(2, 1fr); }
+            .sp-caption { font-size: 16px; }
+            .sp-remove { width: 36px; height: 36px; line-height: 36px; font-size: 18px; top: 4px; right: 4px; }
+        }
         .btn-secondary { background: #6c757d; color: white; }
 
         .btn:hover {
@@ -295,15 +324,66 @@
             margin: 3px 0;
         }
 
-        .item-row {
+        /* V2.8: compact number boxes, wider Item + Remarks */
+        .item-row,
+        .item-header {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 2fr 80px;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding: 15px;
+            grid-template-columns: minmax(0, 3fr) 76px 76px 66px 66px minmax(0, 4fr) 92px;
+            gap: 8px;
+            align-items: start;
+        }
+        .item-row {
+            margin-bottom: 10px;
+            padding: 10px 12px;
             background: #f8f9fa;
             border-radius: 8px;
-            align-items: start;
+        }
+        .item-row .f {
+            display: block;
+            min-width: 0;
+            margin: 0;
+        }
+        .item-row .f input,
+        .item-row .f textarea {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .item-row .m-label {
+            display: none;
+        }
+        /* Tablets: Remarks + buttons move to a second line so nothing is cut off */
+        @media (min-width: 769px) and (max-width: 1100px) {
+            .item-row, .item-header {
+                grid-template-columns: minmax(0, 1fr) 76px 76px 66px 66px;
+            }
+            .item-row .f-remarks { grid-column: 1 / 5; }
+            .item-row .item-actions { grid-column: 5 / 6; flex-direction: column; }
+            .item-header span:nth-child(6), .item-header span:nth-child(7) { display: none; }
+            .item-row .f-remarks .m-label { display: block; font-size: 11px; font-weight: 700; color: #1E2568; text-transform: uppercase; margin-bottom: 2px; }
+        }
+        .item-header {
+            padding: 0 12px 4px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #1E2568;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .item-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .item-actions .btn {
+            padding: 8px 10px;
+            margin: 0;
+            flex: 1;
+        }
+        .btn-duplicate {
+            background: #2C368E;
+            color: #fff;
+        }
+        .btn-duplicate:hover {
+            background: #1E2568;
         }
 
         .item-row input,
@@ -316,6 +396,10 @@
 
         .item-row textarea {
             min-height: 60px;
+            resize: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+            font-family: inherit;
         }
 
         .nav-buttons {
@@ -500,10 +584,23 @@
             }
             
             .item-row input,
-            .item-row textarea,
-            .item-row button {
+            .item-row textarea {
                 width: 100% !important;
                 margin: 0 !important;
+            }
+            .item-header {
+                display: none !important;
+            }
+            .item-row .m-label {
+                display: block;
+                font-size: 11px;
+                font-weight: 700;
+                color: #1E2568;
+                text-transform: uppercase;
+                margin-bottom: 2px;
+            }
+            .item-actions {
+                width: 100%;
             }
             
             .library-item {
@@ -672,7 +769,7 @@
     <div class="container">
         <div class="header" style="position: relative; background: linear-gradient(135deg, #1E2568 0%, #2C368E 60%, #3299D3 100%);">
             <h1>🏗️ FitOut Engineering & Construction - Quotation System</h1>
-            <p>Version 2.6 - Header/logo spacing fix, T&C auto page-break (no more cramped last clause), mobile Settings modal fix</p>
+            <p>Version 2.9 - Optional Site Photos (real shape, no cropping), Labelled item rows, Duplicate button, full-height Remarks, permanent Settings, PDF layout fixes - Phone App edition</p>
             <div class="auto-save-indicator" id="autoSaveIndicator">
                 <span class="dot"></span>
                 <span id="autoSaveText">Auto-save active</span>
@@ -690,6 +787,7 @@
             <button class="file-btn" onclick="printSuppliers()" style="background: #ff8c00; color: white;">📦 PRINT SUPPLIERS</button>
             <button class="file-btn" onclick="openInvoiceModal()" style="background: #6f42c1; color: white;">🧾 Generate Invoice</button>
             <button class="file-btn" onclick="openLoadInvoiceModal()" style="background: #17a2b8; color: white;">📂 Invoice History</button>
+            <button class="file-btn" id="installAppBtn" onclick="installPwaApp()" style="display: none; background: #F39200; color: white;">📲 Install App</button>
         </div>
 
         <div class="content">
@@ -956,7 +1054,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
             <!-- Step 13: Others -->
             <div id="step-13" class="step">
                 <div class="section">
-                    <div class="section-header">Step 13: Aircon, Signage & Miscellaneous</div>
+                    <div class="section-header">Step 13: Metal Works, Steel Fabrication, Aircon, Signage & Miscellaneous</div>
                     <div class="section-content">
                         <h3 style="color:#1E2568;margin-bottom:10px;">⚙️ Metal Works</h3>
                         <div id="metalworksItems"></div>
@@ -1032,7 +1130,8 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                         </div>
                         
                         <div id="quotationSummary"></div>
-                        
+
+
                         <!-- Payment Terms & T&C - Hidden by default, shown only when printing client quote -->
                         <div class="payment-terms-section" style="display: none;">
                             <div style="margin-top: 40px;">
@@ -1068,6 +1167,18 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                         <!-- Costing Table - Hidden by default, shown only when printing costing -->
                         <div class="costing-table-section" style="display: none;">
                             <div id="costingTableContent"></div>
+                        </div>
+
+                        <!-- V2.9: Optional Site Photos (printed on the last page of the Client Quote) -->
+                        <div class="site-photos-card no-print" id="sitePhotosCard">
+                            <h3>📷 Optional Site Photos <span id="sitePhotosCount" style="font-size: 13px; color: #888; font-weight: 400; white-space: nowrap;">(0 of 6)</span></h3>
+                            <p class="sp-hint">Add up to 6 photos (samples or actual site works). They print at their real shape (nothing cut off), 2 per row, on an extra last page after the sign-off. No photos = no extra page. Floor plans and drawings work too. Captions print in English letters only (Chinese characters and emoji are left out of the PDF).</p>
+                            <div class="site-photos-grid" id="sitePhotosGrid"></div>
+                            <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button type="button" class="btn btn-primary" onclick="document.getElementById('sitePhotosInput').click()">➕ Add Photos</button>
+                                <button type="button" class="btn btn-secondary" onclick="clearSitePhotos()">🗑️ Remove All Photos</button>
+                            </div>
+                            <input type="file" id="sitePhotosInput" accept="image/*" multiple style="display: none;" onchange="handleSitePhotoFiles(this.files); this.value='';">
                         </div>
                         
                         <div class="nav-buttons no-print">
@@ -1520,7 +1631,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
         </div>
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         // Global quote data
         let quoteData = {
             id: 'Q-' + Date.now(),
@@ -1565,7 +1676,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                 paymentTerms: '• 50% deposit upon confirmation of order\n• 40% upon completion of works\n• 10% upon final inspection and handover\n\nAll payments to be made via bank transfer or cheque payable to "FitOut Engineering & Construction Pte Ltd"',
                 termsConditions: 'TERMS & CONDITIONS\n\nA. QUOTATION VALIDITY & SCOPE\n1. This quotation is valid for 30 days from the date of issue.\n2. Works shall be carried out strictly according to the scope detailed in this quotation.\n3. All works quoted are based on standard normal working hours. Any requirement for after-office hours work will be quoted separately.\n4. Any other requirements not specified in this quotation will be quoted separately.\n\nB. PAYMENT TERMS\n5. Payment terms as specified in the Payment Terms section of this quotation.\n6. For renovation contracts below SGD $5,000, FULL PAYMENT of contract sum is required upfront.\n7. No retention of any amount on the Agreed Price upon handover. FULL PAYMENT must be made. All amounts are in SGD (Singapore Dollars).\n8. We reserve the right to STOP ALL WORKS immediately and reinstate to pre-work condition for delay or default payment within Three (3) Working Days.\n\nC. CANCELLATION & REFUNDS\n9. This Agreement once signed cannot be cancelled. For contracts below $5,000, 70% of the contract sum will be refunded if cancellation occurs within Seven (7) working days.\n10. All deposits paid are non-refundable as costs have already been incurred in the work process.\n11. There will be no refunds for any payments made as payments may have already been utilized for the project\'s needs.\n\nD. WORK COMMENCEMENT & TIMELINE\n12. Works must commence within 12 months from the date stated in this quotation, failing which 20% of the total contract sum will be claimed.\n13. Estimated timeline will be provided upon confirmation. Actual timeline may vary depending on site conditions and unforeseen circumstances.\n\nE. WARRANTY & DEFECTS LIABILITY\n14. Workmanship warranty of 12 months from completion date. Product warranties as per manufacturer\'s terms.\n15. If no written notice of any defect in workmanship or material is given to us within 7 days after handover or practical completion, the Company shall be entitled to collect full payment from the client. Any defects reported after this period will be covered under our warranty.\n16. We shall, upon being notified by you, make good at our own cost any defects but will not extend to any consequential economic losses or damages suffered by you.\n\nF. NATURAL PRODUCTS & MATERIAL VARIATIONS\n17. Natural products such as marble, granite, timber veneer (examples not exhaustive) may have naturally occurring imperfections which are not deemed to be defective goods or materials.\n18. Installation and delivery of natural products may give rise to imperfections due to their nature, which shall not be deemed to be due to poor workmanship.\n19. Products supplied may vary in color and shade as between themselves and as between catalogue or print materials. Such differences shall not be subject to dispute or objection.\n\nG. SITE REQUIREMENTS & ACCESS\n20. Client shall ensure site is ready for works to commence. Delays due to site conditions may incur additional charges.\n21. Client shall provide free access to water, electricity, and storage space during the renovation period.\n22. Refundable Renovation Deposits will be payable by owner directly to Building Management/HDB Authority.\n23. Different buildings may require application of Temporary Electricity Supply which is payable directly to Management (refer to Renovation Guide).\n\nH. VARIATIONS & CHANGES\n24. Any changes or additions to the scope of works will be charged separately and subject to written approval.\n\nI. FORCE MAJEURE & LIABILITY\n25. We shall not be accountable for any force majeure events, although we will endeavor to minimize the impact from such events.\n26. FitOut shall not be liable for delays caused by factors beyond our control including but not limited to material shortages, permit delays, or force majeure.\n\nJ. LEGAL & DISPUTE RESOLUTION\n27. This Agreement is governed by the laws of the Republic of Singapore and the parties agree to be subject to the jurisdiction of the Courts in the Republic of Singapore.\n28. You (the owner/person/company) will NOT contest the amount in the event of a Small Court Claim or legal claim against you.\n\nK. ACCEPTANCE\n29. Acceptance of this quotation shall be deemed as acceptance of all terms and conditions stated herein.',
                 footer: 'For enquiries, please contact: +65 8840 2273 | Email: admin@fitoutengineering.co',
-                companyAddress: '78 Geylang Bahru #01-2902, Singapore 339686',
+                companyAddress: 'No. 25 Kaki Bukit Road 4, #07-70 Synergy@KB, Singapore 417800',
                 bankName: '',
                 bankAccount: '',
                 swiftCode: '',
@@ -1574,7 +1685,8 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                 personInCharge: '',
                 personInChargeDesignation: ''
             },
-            suppliers: []  // Supplier list: {name, category, description, cost, sell, paymentStatus, invoiceNumber, paymentDate, dueDate, paymentRemarks}
+            sitePhotos: [],  // V2.9: up to 6 {data (JPEG, original shape), caption}
+            suppliers: []  // Supplier list
         };
 
         // ═══════════════════════════════════════════════════════════
@@ -1615,12 +1727,12 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                 data.settings.paymentTerms = '• 50% deposit upon confirmation of order\n• 40% upon completion of works\n• 10% upon final inspection and handover\n\nAll payments to be made via bank transfer or cheque payable to "FitOut Engineering & Construction Pte Ltd"';
             }
             if (typeof data.settings.termsConditions !== 'string') {
-                data.settings.termsConditions = 'TERMS & CONDITIONS\n\nThis quotation is valid for 30 days from the date of issue. Please refer to Settings to customize these terms.';
+                data.settings.termsConditions = 'TERMS & CONDITIONS\n\nA. QUOTATION VALIDITY & SCOPE\n1. This quotation is valid for 30 days from the date of issue.\n2. Works shall be carried out strictly according to the scope detailed in this quotation.\n3. All works quoted are based on standard normal working hours. Any requirement for after-office hours work will be quoted separately.\n4. Any other requirements not specified in this quotation will be quoted separately.\n\nB. PAYMENT TERMS\n5. Payment terms as specified in the Payment Terms section of this quotation.\n6. For renovation contracts below SGD $5,000, FULL PAYMENT of contract sum is required upfront.\n7. No retention of any amount on the Agreed Price upon handover. FULL PAYMENT must be made. All amounts are in SGD (Singapore Dollars).\n8. We reserve the right to STOP ALL WORKS immediately and reinstate to pre-work condition for delay or default payment within Three (3) Working Days.\n\nC. CANCELLATION & REFUNDS\n9. This Agreement once signed cannot be cancelled. For contracts below $5,000, 70% of the contract sum will be refunded if cancellation occurs within Seven (7) working days.\n10. All deposits paid are non-refundable as costs have already been incurred in the work process.\n11. There will be no refunds for any payments made as payments may have already been utilized for the project\'s needs.\n\nD. WORK COMMENCEMENT & TIMELINE\n12. Works must commence within 12 months from the date stated in this quotation, failing which 20% of the total contract sum will be claimed.\n13. Estimated timeline will be provided upon confirmation. Actual timeline may vary depending on site conditions and unforeseen circumstances.\n\nE. WARRANTY & DEFECTS LIABILITY\n14. Workmanship warranty of 12 months from completion date. Product warranties as per manufacturer\'s terms.\n15. If no written notice of any defect in workmanship or material is given to us within 7 days after handover or practical completion, the Company shall be entitled to collect full payment from the client. Any defects reported after this period will be covered under our warranty.\n16. We shall, upon being notified by you, make good at our own cost any defects but will not extend to any consequential economic losses or damages suffered by you.\n\nF. NATURAL PRODUCTS & MATERIAL VARIATIONS\n17. Natural products such as marble, granite, timber veneer (examples not exhaustive) may have naturally occurring imperfections which are not deemed to be defective goods or materials.\n18. Installation and delivery of natural products may give rise to imperfections due to their nature, which shall not be deemed to be due to poor workmanship.\n19. Products supplied may vary in color and shade as between themselves and as between catalogue or print materials. Such differences shall not be subject to dispute or objection.\n\nG. SITE REQUIREMENTS & ACCESS\n20. Client shall ensure site is ready for works to commence. Delays due to site conditions may incur additional charges.\n21. Client shall provide free access to water, electricity, and storage space during the renovation period.\n22. Refundable Renovation Deposits will be payable by owner directly to Building Management/HDB Authority.\n23. Different buildings may require application of Temporary Electricity Supply which is payable directly to Management (refer to Renovation Guide).\n\nH. VARIATIONS & CHANGES\n24. Any changes or additions to the scope of works will be charged separately and subject to written approval.\n\nI. FORCE MAJEURE & LIABILITY\n25. We shall not be accountable for any force majeure events, although we will endeavor to minimize the impact from such events.\n26. FitOut shall not be liable for delays caused by factors beyond our control including but not limited to material shortages, permit delays, or force majeure.\n\nJ. LEGAL & DISPUTE RESOLUTION\n27. This Agreement is governed by the laws of the Republic of Singapore and the parties agree to be subject to the jurisdiction of the Courts in the Republic of Singapore.\n28. You (the owner/person/company) will NOT contest the amount in the event of a Small Court Claim or legal claim against you.\n\nK. ACCEPTANCE\n29. Acceptance of this quotation shall be deemed as acceptance of all terms and conditions stated herein.';
             }
             if (typeof data.settings.footer !== 'string') {
                 data.settings.footer = 'For enquiries, please contact: +65 8840 2273 | Email: admin@fitoutengineering.co';
             }
-            if (typeof data.settings.companyAddress !== 'string') data.settings.companyAddress = '78 Geylang Bahru #01-2902, Singapore 339686';
+            if (typeof data.settings.companyAddress !== 'string' || /Geylang Bahru/i.test(data.settings.companyAddress)) data.settings.companyAddress = 'No. 25 Kaki Bukit Road 4, #07-70 Synergy@KB, Singapore 417800';
             if (typeof data.settings.bankName !== 'string') data.settings.bankName = '';
             if (typeof data.settings.bankAccount !== 'string') data.settings.bankAccount = '';
             if (typeof data.settings.swiftCode !== 'string') data.settings.swiftCode = '';
@@ -1630,10 +1742,110 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
             if (typeof data.settings.personInChargeDesignation !== 'string') data.settings.personInChargeDesignation = '';
 
             if (!Array.isArray(data.suppliers)) data.suppliers = [];
+            // V2.9: Optional Site Photos - keep only valid images, max 6
+            if (!Array.isArray(data.sitePhotos)) data.sitePhotos = [];
+            data.sitePhotos = data.sitePhotos
+                .filter(p => p && typeof p.data === 'string' && /^data:image\/(jpeg|png);base64,[A-Za-z0-9+\/=]+$/.test(p.data))
+                .slice(0, 6)
+                .map(p => ({ data: p.data, caption: typeof p.caption === 'string' ? p.caption : '' }));
+
+
             if (!data.id) data.id = 'Q-' + Date.now();
             if (!data.date) data.date = new Date().toISOString();
 
             return data;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // V2.8 PERMANENT SETTINGS: Settings (T&C, payment terms, bank,
+        // address, footer, person-in-charge), logos and QR code are
+        // kept in their own storage slot. They survive "Start New
+        // Quote", page reloads and loading older quote files.
+        // ═══════════════════════════════════════════════════════════
+        const MASTER_SETTINGS_KEY = 'fitout_eng_master_settings';
+
+        function readMasterSettings() {
+            try {
+                const raw = localStorage.getItem(MASTER_SETTINGS_KEY);
+                return raw ? JSON.parse(raw) : null;
+            } catch (e) {
+                console.error('Could not read saved settings:', e);
+                return null;
+            }
+        }
+
+        function saveMasterSettings() {
+            const master = {
+                settings: JSON.parse(JSON.stringify(quoteData.settings || {})),
+                logoLeft: quoteData.logoLeft || null,
+                logoRight: quoteData.logoRight || null,
+                qrCode: quoteData.qrCode || null,
+                savedAt: Date.now()
+            };
+            try {
+                localStorage.setItem(MASTER_SETTINGS_KEY, JSON.stringify(master));
+                return true;
+            } catch (e) {
+                // Storage full (usually very large logo images): keep the text settings at least
+                console.error('Could not save full settings:', e);
+                try {
+                    localStorage.setItem(MASTER_SETTINGS_KEY, JSON.stringify({ settings: master.settings, logoLeft: null, logoRight: null, qrCode: null, savedAt: master.savedAt }));
+                    alert('⚠️ Settings saved, but the logo/QR images are too large to keep permanently. Please use smaller image files (ideally under 500 KB each) and upload them again.');
+                } catch (e2) {
+                    alert('⚠️ Settings could not be saved permanently on this browser.');
+                }
+                return false;
+            }
+        }
+
+        // Puts the saved settings onto a quote. The first time V2.8 runs,
+        // the settings already in the restored quote become the saved copy.
+        function applyMasterSettings(data, seed) {
+            const master = readMasterSettings();
+            if (!master || !master.settings) {
+                if (seed !== false && data && data.settings && Object.keys(data.settings).length) {
+                    const keep = quoteData;
+                    quoteData = data;
+                    saveMasterSettings();
+                    quoteData = keep;
+                }
+                return data;
+            }
+            data.settings = Object.assign({}, data.settings || {}, master.settings);
+            if (/Geylang Bahru/i.test(data.settings.companyAddress || '')) {
+                data.settings.companyAddress = 'No. 25 Kaki Bukit Road 4, #07-70 Synergy@KB, Singapore 417800';
+            }
+            data.logoLeft = master.logoLeft || null;
+            data.logoRight = master.logoRight || null;
+            data.qrCode = master.qrCode || null;
+            return data;
+        }
+
+        function adoptQuote(raw, seed, keepOwnTerms) {
+            const own = (keepOwnTerms && raw && raw.settings) ? { pt: raw.settings.paymentTerms, tc: raw.settings.termsConditions } : {};
+            const data = applyMasterSettings(normalizeQuoteData(raw), seed);
+            // V2.9: an old quote re-opened keeps the Payment Terms and T&C it was issued with
+            if (typeof own.pt === 'string' && own.pt.trim()) data.settings.paymentTerms = own.pt;
+            if (typeof own.tc === 'string' && own.tc.trim()) data.settings.termsConditions = own.tc;
+            return data;
+        }
+
+        // V2.9: first run after upgrading - copy Settings, logos and QR code
+        // from the old auto-save into permanent Settings, whether or not
+        // the user chooses to restore the old quote.
+        function seedMasterFromOldAutosave() {
+            if (readMasterSettings()) return;
+            let raw = null;
+            try { raw = localStorage.getItem('fitout_eng_autosave'); } catch (e) { /* blocked */ }
+            if (!raw) { try { raw = sessionStorage.getItem('fitout_eng_autosave'); } catch (e) { /* blocked */ } }
+            if (!raw) return;
+            try {
+                const old = normalizeQuoteData(JSON.parse(raw));
+                const keep = quoteData;
+                quoteData = old;
+                saveMasterSettings();
+                quoteData = keep;
+            } catch (e) { console.error('Could not carry over old settings:', e); }
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -1648,6 +1860,8 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
         // corrupted old save, or storage blocked by a sandboxed embed)
         // can never prevent the others from running.
         window.addEventListener('DOMContentLoaded', () => {
+            try { seedMasterFromOldAutosave(); } catch (e) { console.error('seedMasterFromOldAutosave failed:', e); }
+            try { quoteData = adoptQuote(quoteData, false); updateLogoPreviewsFromData(); } catch (e) { console.error('Applying saved settings failed:', e); }
             try { checkForUnsavedWork(); } catch (e) { console.error('checkForUnsavedWork failed:', e); }
             try { startAutoSave(); } catch (e) { console.error('startAutoSave failed:', e); }
             try { updateAutoSaveIndicator(); } catch (e) { console.error('updateAutoSaveIndicator failed:', e); }
@@ -1663,23 +1877,31 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
             }
         });
 
+        // V2.9: use whichever auto-save copy is newer (browser storage
+        // or this-tab backup), e.g. after storage filled up with photos.
+        function readNewestAutosave() {
+            let a = null, b = null;
+            try { const d = localStorage.getItem('fitout_eng_autosave'); if (d) a = { data: d, time: parseInt(localStorage.getItem('fitout_eng_autosave_time') || '0', 10) || 0 }; } catch (e) { console.error('LocalStorage not accessible:', e); }
+            try { const d = sessionStorage.getItem('fitout_eng_autosave'); if (d) b = { data: d, time: parseInt(sessionStorage.getItem('fitout_eng_autosave_time') || '0', 10) || 0 }; } catch (e) { console.error('SessionStorage not accessible:', e); }
+            if (a && b) return b.time > a.time ? b : a;
+            return a || b || { data: null, time: 0 };
+        }
+
         function checkForUnsavedWork() {
-            let savedData, saveTime;
-            try {
-                savedData = localStorage.getItem('fitout_eng_autosave');
-                saveTime = localStorage.getItem('fitout_eng_autosave_time');
-            } catch (error) {
-                console.error('LocalStorage not accessible (checkForUnsavedWork):', error);
-            }
-            if (!savedData) {
-                try {
-                    savedData = sessionStorage.getItem('fitout_eng_autosave');
-                    saveTime = sessionStorage.getItem('fitout_eng_autosave_time');
-                } catch (error) {
-                    console.error('SessionStorage not accessible (checkForUnsavedWork):', error);
-                }
-            }
+            const newest = readNewestAutosave();
+            let savedData = newest.data;
+            let saveTime = newest.time ? String(newest.time) : null;
             
+            // V2.8: skip the prompt if the saved quote is blank (e.g. just after Start New Quote)
+            try {
+                const peek = savedData ? JSON.parse(savedData) : null;
+                const hasItems = peek && peek.items && Object.values(peek.items).some(a => Array.isArray(a) && a.length);
+                const hasClient = peek && peek.client && (peek.client.name || peek.client.title || peek.client.ref || peek.client.address);
+                const hasSuppliers = peek && Array.isArray(peek.suppliers) && peek.suppliers.length;
+                const hasPhotos = peek && Array.isArray(peek.sitePhotos) && peek.sitePhotos.length;
+                if (peek && !hasItems && !hasClient && !hasSuppliers && !hasPhotos) savedData = null;
+            } catch (e) { /* keep prompt */ }
+
             if (savedData && saveTime) {
                 const minutesAgo = Math.floor((Date.now() - parseInt(saveTime)) / 60000);
                 if (minutesAgo < 1440) { // Less than 24 hours
@@ -1690,7 +1912,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                     
                     if (confirm(`Found unsaved work from ${timeText}. Would you like to restore it?`)) {
                         try {
-                            quoteData = normalizeQuoteData(JSON.parse(savedData));
+                            quoteData = adoptQuote(JSON.parse(savedData), true, true);
                             populateFormFromData();
                             alert('✅ Unsaved work restored successfully!');
                         } catch (error) {
@@ -1713,7 +1935,16 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                 console.error('Auto-save (reading fields) error:', error);
             }
 
-            const serialized = JSON.stringify(quoteData);
+            // V2.8: logos/QR live in the permanent Settings copy, so the
+            // auto-save copy leaves them out (saves storage space).
+            let toStore = quoteData;
+            try {
+                const master = readMasterSettings();
+                if (master && master.settings) {
+                    toStore = Object.assign({}, quoteData, { logoLeft: null, logoRight: null, qrCode: null });
+                }
+            } catch (e) { /* fall back to full copy */ }
+            const serialized = JSON.stringify(toStore);
             let savedSomewhere = false;
 
             // Primary: localStorage
@@ -1723,6 +1954,11 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                 savedSomewhere = true;
             } catch (error) {
                 console.error('Auto-save (localStorage) error:', error);
+                // V2.9: storage full (e.g. many large photos) - warn once per session
+                if (error && (error.name === 'QuotaExceededError' || error.code === 22) && !window.__quotaWarned) {
+                    window.__quotaWarned = true;
+                    alert('⚠️ Browser storage is full, so auto-save could not keep this quote.\n\nPlease click 💾 Save to Desktop now to keep your work, or remove some site photos.');
+                }
             }
 
             // Redundant backup: sessionStorage. Some embedded/sandboxed
@@ -1753,8 +1989,13 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
             // catalog item to add it is a click, not an input event,
             // so click must be covered too or additions never autosave.
             ['input', 'change', 'click'].forEach(evtName => {
-                document.addEventListener(evtName, () => {
-                    hasUnsavedChanges = true;
+                document.addEventListener(evtName, (e) => {
+                    // V2.9: clicking Save / Print / Invoice / Settings / step
+                    // buttons is not an edit, so it must not re-arm the
+                    // "unsaved changes" warning right after a save.
+                    const btn = evtName === 'click' && e.target && e.target.closest ? e.target.closest('[onclick]') : null;
+                    const navOnly = btn && /saveQuote|print|generateInvoicePDF|Modal|goToStep|continueEditing|manualDownloadBar/.test(btn.getAttribute('onclick') || '');
+                    if (!navOnly) hasUnsavedChanges = true;
                     clearTimeout(window.autoSaveTimeout);
                     window.autoSaveTimeout = setTimeout(autoSave, 1200);
                 });
@@ -1796,24 +2037,12 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function loadLastSaved() {
             closeLoadModal();
-            let savedData;
-            try {
-                savedData = localStorage.getItem('fitout_eng_autosave');
-            } catch (error) {
-                console.error('LocalStorage not accessible (loadLastSaved):', error);
-            }
-            if (!savedData) {
-                try {
-                    savedData = sessionStorage.getItem('fitout_eng_autosave');
-                } catch (error) {
-                    console.error('SessionStorage not accessible (loadLastSaved):', error);
-                }
-            }
+            let savedData = readNewestAutosave().data;
             
             if (savedData) {
                 if (confirm('This will load your last auto-saved work. Continue?')) {
                     try {
-                        quoteData = normalizeQuoteData(JSON.parse(savedData));
+                        quoteData = adoptQuote(JSON.parse(savedData), true, true);
                         populateFormFromData();
                         goToStep(1);
                         alert('✅ Last saved quote loaded successfully!');
@@ -1838,11 +2067,11 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                     const reader = new FileReader();
                     reader.onload = function(event) {
                         try {
-                            quoteData = normalizeQuoteData(JSON.parse(event.target.result));
+                            quoteData = adoptQuote(JSON.parse(event.target.result), false, true);
                             
                             populateFormFromData();
                             goToStep(1);
-                            alert('✅ Quote loaded successfully from file!');
+                            alert('✅ Quote loaded successfully from file!\n\nNote: this quote keeps its own Payment Terms and T&C. Your current logos, QR code, footer, address and bank details are used.');
                             autoSave(); // Save to auto-save after loading
                         } catch (error) {
                             alert('❌ Error loading file: ' + error.message);
@@ -2051,7 +2280,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addLibraryItem(category, item) {
             const newItem = {
-                id: Date.now(),
+                id: newItemId(),
                 name: item.name,
                 cost: item.cost,
                 sell: item.sell,
@@ -2063,39 +2292,84 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
             renderItems(category);
         }
 
+        // V2.8: some categories share one on-screen list
+        // (Partitions + Rockwool, Electrical + Custom Electrical).
+        // Every category mapped to the same list is now drawn together,
+        // so adding one never hides the other.
         function renderItems(category) {
-            console.log(`renderItems called for category: ${category}`); // DEBUG
             const containerId = getCategoryContainerId(category);
-            console.log(`Container ID: ${containerId}`); // DEBUG
             const container = document.getElementById(containerId);
             if (!container) {
-                console.error(`ERROR: Container not found for category ${category}, ID: ${containerId}`); // DEBUG
+                console.error(`Container not found for category ${category}, ID: ${containerId}`);
                 return;
             }
-            
-            console.log(`Container found, clearing existing items...`); // DEBUG
             container.innerHTML = '';
-            
-            const items = quoteData.items[category] || [];
-            console.log(`Number of items to render: ${items.length}`); // DEBUG
-            items.forEach((item, index) => {
-                console.log(`Rendering item ${index + 1}/${items.length}: ${item.name}`); // DEBUG
-                const div = document.createElement('div');
-                div.className = 'item-row';
-                // Fix for Bug #9 - Handle undefined values
-                // Fix for Bug #11 - Escape HTML to prevent XSS attacks
-                div.innerHTML = `
-                    <input type="text" value="${escapeHtml(item.name || '')}" onchange="updateItem('${category}', ${item.id}, 'name', this.value)">
-                    <input type="number" value="${item.cost || 0}" onchange="updateItem('${category}', ${item.id}, 'cost', this.value)">
-                    <input type="number" value="${item.sell || 0}" onchange="updateItem('${category}', ${item.id}, 'sell', this.value)">
-                    <input type="text" value="${escapeHtml(item.unit || '')}" onchange="updateItem('${category}', ${item.id}, 'unit', this.value)">
-                    <input type="number" value="${item.qty || 0}" onchange="updateItem('${category}', ${item.id}, 'qty', this.value)">
-                    <textarea onchange="updateItem('${category}', ${item.id}, 'remarks', this.value)">${escapeHtml(item.remarks || '')}</textarea>
-                    <button class="btn btn-danger" onclick="removeItem('${category}', ${item.id})">🗑️</button>
-                `;
-                container.appendChild(div);
+
+            const shared = Object.keys(quoteData.items || {}).filter(c => getCategoryContainerId(c) === containerId);
+            const total = shared.reduce((n, c) => n + ((quoteData.items[c] || []).length), 0);
+            if (total > 0) {
+                const header = document.createElement('div');
+                header.className = 'item-header';
+                header.innerHTML = '<span>Item</span><span>Cost</span><span>Sell</span><span>Unit</span><span>Qty</span><span>Remarks</span><span></span>';
+                container.appendChild(header);
+            }
+
+            shared.forEach(cat => {
+                (quoteData.items[cat] || []).forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'item-row';
+                    div.innerHTML = `
+                        <label class="f"><span class="m-label">Item</span><input type="text" title="Item" placeholder="Item" value="${escapeHtml(item.name || '')}" onchange="updateItem('${cat}', ${item.id}, 'name', this.value)"></label>
+                        <label class="f"><span class="m-label">Cost</span><input type="number" title="Cost" placeholder="Cost" value="${item.cost || 0}" onchange="updateItem('${cat}', ${item.id}, 'cost', this.value)"></label>
+                        <label class="f"><span class="m-label">Sell</span><input type="number" title="Sell" placeholder="Sell" value="${item.sell || 0}" onchange="updateItem('${cat}', ${item.id}, 'sell', this.value)"></label>
+                        <label class="f"><span class="m-label">Unit</span><input type="text" title="Unit" placeholder="Unit" value="${escapeHtml(item.unit || '')}" onchange="updateItem('${cat}', ${item.id}, 'unit', this.value)"></label>
+                        <label class="f"><span class="m-label">Qty</span><input type="number" title="Qty" placeholder="Qty" value="${item.qty || 0}" onchange="updateItem('${cat}', ${item.id}, 'qty', this.value)"></label>
+                        <label class="f f-remarks"><span class="m-label">Remarks</span><textarea title="Remarks" placeholder="Remarks" oninput="autoGrow(this); updateItem('${cat}', ${item.id}, 'remarks', this.value)" onchange="updateItem('${cat}', ${item.id}, 'remarks', this.value)">${escapeHtml(item.remarks || '')}</textarea></label>
+                        <div class="item-actions">
+                            <button class="btn btn-danger" title="Delete this item" onclick="removeItem('${cat}', ${item.id})">🗑️</button>
+                            <button class="btn btn-duplicate" title="Duplicate this item (copy appears right below)" onclick="duplicateItem('${cat}', ${item.id})">⧉</button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
             });
-            console.log(`renderItems completed for ${category}`); // DEBUG
+            autoGrowAll(container);
+        }
+
+        // V2.8: Remarks box grows to show the full text (no scrolling)
+        function autoGrow(el) {
+            if (!el || el.offsetParent === null) return; // hidden step: sized when shown
+            el.style.height = 'auto';
+            el.style.height = (el.scrollHeight + 2) + 'px';
+        }
+        function autoGrowAll(root) {
+            (root || document).querySelectorAll('.item-row textarea').forEach(autoGrow);
+        }
+
+        window.addEventListener('resize', () => {
+            clearTimeout(window._autoGrowTimer);
+            window._autoGrowTimer = setTimeout(() => autoGrowAll(document.querySelector('.step.active')), 150);
+        });
+
+        // V2.8: unique id even when several items are made in the same millisecond
+        function newItemId() {
+            let id = Date.now();
+            const used = new Set();
+            Object.values(quoteData.items || {}).forEach(arr => (arr || []).forEach(i => used.add(i.id)));
+            while (used.has(id)) id++;
+            return id;
+        }
+
+        // V2.8: copy an item and place the copy directly below the original
+        function duplicateItem(category, id) {
+            const list = quoteData.items[category] || [];
+            const index = list.findIndex(i => i.id === id);
+            if (index === -1) return;
+            const copy = JSON.parse(JSON.stringify(list[index]));
+            copy.id = newItemId();
+            list.splice(index + 1, 0, copy);
+            renderItems(category);
+            autoSave();
         }
 
         function getCategoryContainerId(category) {
@@ -2154,7 +2428,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
         // Add custom items
         function addCustomPreliminary() {
             quoteData.items.preliminary.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Custom Item',
                 cost: 0,
                 sell: 0,
@@ -2167,7 +2441,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addDismantleItem() {
             quoteData.items.dismantle.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Dismantle & Disposal',
                 cost: 0,
                 sell: 0,
@@ -2180,7 +2454,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addCustomElectrical() {
             quoteData.items.electrical.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Custom Electrical Item',
                 cost: 0,
                 sell: 0,
@@ -2222,7 +2496,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
             }
 
             quoteData.items.partitions.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: `Partition - ${roomName}`,
                 cost: costPerSqft,  // Per-unit price
                 sell: sellPerSqft,  // Per-unit price
@@ -2241,7 +2515,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addRockwoolItem() {
             quoteData.items.rockwool.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Rockwool Insulation',
                 cost: 1.5,
                 sell: 2,
@@ -2283,7 +2557,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
             }
 
             quoteData.items.ceiling.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: name,
                 cost: costPerSqft,  // Per-unit price
                 sell: sellPerSqft,  // Per-unit price
@@ -2304,7 +2578,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addFurnitureItem() {
             quoteData.items.furniture.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Furniture Item',
                 cost: 0,
                 sell: 0,
@@ -2368,7 +2642,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
             }
 
             quoteData.items.flooring.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: name,
                 cost: costPerSqft,  // Per-unit price
                 sell: sellPerSqft,  // Per-unit price
@@ -2389,7 +2663,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addCustomDoor() {
             quoteData.items.doors.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Custom Door',
                 cost: 0,
                 sell: 0,
@@ -2402,7 +2676,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addCustomCarpentry() {
             quoteData.items.carpentry.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Custom Carpentry',
                 cost: 0,
                 sell: 0,
@@ -2415,7 +2689,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addCountertopItem() {
             quoteData.items.countertop.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Countertop Surface',
                 cost: 110,
                 sell: 145,
@@ -2428,7 +2702,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addPlumbingItem() {
             quoteData.items.plumbing.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Plumbing Work',
                 cost: 0,
                 sell: 0,
@@ -2441,7 +2715,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addMetalWorksItem() {
             quoteData.items.metalworks.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Metal Works',
                 cost: 0,
                 sell: 0,
@@ -2454,7 +2728,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addSteelFabItem() {
             quoteData.items.steelfab.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Steel Fabrication',
                 cost: 0,
                 sell: 0,
@@ -2467,7 +2741,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addAirconItem() {
             quoteData.items.aircon.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Aircon Works',
                 cost: 0,
                 sell: 0,
@@ -2480,7 +2754,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addSignageItem() {
             quoteData.items.signage.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Signage',
                 cost: 0,
                 sell: 0,
@@ -2493,7 +2767,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         function addMiscItem() {
             quoteData.items.misc.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Miscellaneous Item',
                 cost: 0,
                 sell: 0,
@@ -2511,7 +2785,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                 quoteData.items.optional = [];  // Safety check
             }
             quoteData.items.optional.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Optional Item',
                 cost: 0,
                 sell: 0,
@@ -2530,7 +2804,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                 quoteData.items.discounts = [];  // Safety check
             }
             quoteData.items.discounts.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: 'Special Discount',
                 cost: 0,
                 sell: 0,
@@ -2552,7 +2826,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                 quoteData.suppliers = [];
             }
             quoteData.suppliers.push({
-                id: Date.now(),
+                id: newItemId(),
                 name: '',
                 category: '',
                 description: '',
@@ -2811,6 +3085,9 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                 renderSuppliers();
             }
             
+            // V2.8: size Remarks boxes now that this step is visible
+            try { autoGrowAll(document.getElementById('step-' + step)); } catch (e) { /* non-critical */ }
+
             // Scroll to top
             window.scrollTo(0, 0);
         }
@@ -3121,62 +3398,30 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
         // File operations
         function startNewQuote() {
-            if (confirm('Start a new quote? Current data will be cleared (including auto-save).')) {
-                // Clear auto-save
+            if (confirm('Start a new quote? Current quote data will be cleared (including auto-save).\n\nYour Settings, logos and QR code will be kept.')) {
+                // Make sure the current settings are kept before clearing
+                try { if (quoteData && quoteData.settings) saveMasterSettings(); } catch (e) { console.error(e); }
+
                 try {
                     localStorage.removeItem('fitout_eng_autosave');
                     localStorage.removeItem('fitout_eng_autosave_time');
                 } catch (error) {
                     console.error('LocalStorage not accessible (startNewQuote):', error);
                 }
-                
-                quoteData = {
-                    id: 'Q-' + Date.now(),
-                    date: new Date().toISOString(),
-                    client: { name: '', address: '', title: '', ref: '' },
-                    logoLeft: null,
-                    logoRight: null,
-                    items: {
-                        preliminary: [],
-                        dismantle: [],
-                        electrical: [],
-                        customElectrical: [],
-                        partitions: [],
-                        rockwool: [],
-                        ceiling: [],
-                        furniture: [],
-                        flooring: [],
-                        doors: [],
-                        carpentry: [],
-                        countertop: [],
-                        plumbing: [],
-                        aircon: [],
-                        signage: [],
-                        misc: [],
-                        metalworks: [],
-                        steelfab: []
-                    },
-                    painting: { 
-                        cost: 800, 
-                        sell: 1300, 
-                        remarks: 'NOTE: Provision for materials, labour & tools to paint the whole house with selected emulsion paint.\nAll painting on to existing wall conditions will be as it is, except of touching up of minor cracks or screw holes.\n\nAny requirement for smoothing of any single walls or patch up window edges will be subjected to extra costs.\nPaint selection based on Nippon 5000 series. Any other series will be quoted separately' 
-                    }
-                };
-                
-                document.getElementById('clientName').value = '';
-                document.getElementById('clientAddress').value = '';
-                document.getElementById('projectTitle').value = '';
-                document.getElementById('refNumber').value = '';
-                document.getElementById('paintingCost').value = 800;
-                document.getElementById('paintingSell').value = 1300;
-                
-                // Reset all item displays
-                Object.keys(quoteData.items).forEach(category => {
-                    renderItems(category);
-                });
-                
+                try {
+                    sessionStorage.removeItem('fitout_eng_autosave');
+                    sessionStorage.removeItem('fitout_eng_autosave_time');
+                } catch (error) { /* non-critical */ }
+
+                // Fresh quote with every section present, then the saved settings
+                quoteData = adoptQuote({ id: 'Q-' + Date.now(), date: new Date().toISOString() });
+
+                populateFormFromData();
+                try { renderSuppliers(); } catch (e) { console.error(e); }
+
                 goToStep(1);
-                alert('✅ New quote started! Auto-save cleared.');
+                hasUnsavedChanges = false;
+                alert('✅ New quote started! Settings, logos and QR code kept.');
             }
         }
 
@@ -3236,7 +3481,8 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                 // Create filename: Quote_CLIENTNAME_Q001_2025-11-18.json
                 const clientName = quoteData.client.name.replace(/[^a-z0-9]/gi, '_') || 'UNNAMED';
                 const quoteRef = quoteData.client.ref.replace(/[^a-z0-9]/gi, '_') || 'NOREF';
-                const dateStr = new Date().toISOString().split('T')[0];
+                const _d = new Date(); // V2.9: Singapore (local) date, not UTC
+                const dateStr = `${_d.getFullYear()}-${String(_d.getMonth()+1).padStart(2,'0')}-${String(_d.getDate()).padStart(2,'0')}`;
                 const fileName = `Quote_${clientName}_${quoteRef}_${dateStr}.json`;
                 
                 const dataBlob = new Blob([dataStr], { type: 'application/json' });
@@ -3280,10 +3526,8 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                 renderItems(category);
             });
             
-            // Render suppliers if they exist
-            if (quoteData.suppliers && quoteData.suppliers.length > 0) {
-                renderSuppliers();
-            }
+            // Render suppliers (also clears the list for a new quote)
+            try { renderSuppliers(); } catch (e) { console.error(e); }
         }
         
         // NEW FUNCTION: Update logo previews (called when loading JSON)
@@ -3311,6 +3555,171 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                     info.textContent = quoteData.logoRight.name;
                 }
             }
+            try { renderSitePhotos(); } catch (e) { console.error('renderSitePhotos failed:', e); }
+        }
+
+        // ============================================
+        // V2.9: OPTIONAL SITE PHOTOS (max 6, original shape) - same as INDesign V127
+        // ============================================
+        const SITE_PHOTO_MAX = 6;
+        const SITE_PHOTO_PX = 1400; // longest side kept in the quote - sharp enough for floor plans, small enough for auto-save
+
+        function escapeHtmlAttr(t) {
+            return String(t || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function renderSitePhotos() {
+            const grid = document.getElementById('sitePhotosGrid');
+            if (!grid) return;
+            if (!Array.isArray(quoteData.sitePhotos)) quoteData.sitePhotos = [];
+            const photos = quoteData.sitePhotos;
+            let html = '';
+            for (let i = 0; i < SITE_PHOTO_MAX; i++) {
+                const p = photos[i];
+                if (p) {
+                    html += `<div class="sp-slot">
+                        <div class="sp-box"><img src="${escapeHtmlAttr(p.data)}" alt="Site photo ${i + 1}">
+                            <span class="sp-num">${i + 1}</span>
+                            <button type="button" class="sp-remove" title="Remove photo" onclick="removeSitePhoto(${i})">✕</button>
+                        </div>
+                        <input type="text" class="sp-caption" maxlength="60" placeholder="Caption (optional)" value="${escapeHtmlAttr(p.caption)}" oninput="updateSitePhotoCaption(${i}, this.value)">
+                    </div>`;
+                } else if (i === photos.length) {
+                    html += `<div class="sp-slot"><div class="sp-box sp-empty" onclick="document.getElementById('sitePhotosInput').click()"><span>＋</span>Add photo</div></div>`;
+                } else {
+                    html += `<div class="sp-slot"><div class="sp-box sp-empty" style="cursor: default; opacity: 0.45;"><span>📷</span>Empty</div></div>`;
+                }
+            }
+            grid.innerHTML = html;
+            const c = document.getElementById('sitePhotosCount');
+            if (c) c.textContent = `(${photos.length} of ${SITE_PHOTO_MAX})`;
+        }
+
+        // Keep the whole photo (no cropping) - only shrink very large ones
+        function prepareSitePhoto(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error('Could not read ' + file.name));
+                reader.onload = () => {
+                    const img = new Image();
+                    img.onerror = () => reject(new Error(file.name + ' is not a supported picture (please use JPG or PNG)'));
+                    img.onload = () => {
+                        const w0 = img.naturalWidth, h0 = img.naturalHeight;
+                        const scale = Math.min(1, SITE_PHOTO_PX / Math.max(w0, h0));
+                        const w = Math.max(1, Math.round(w0 * scale)), h = Math.max(1, Math.round(h0 * scale));
+                        const canvas = document.createElement('canvas');
+                        canvas.width = w; canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = '#ffffff'; // transparent PNGs (e.g. plans) get a white background
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.drawImage(img, 0, 0, w, h);
+                        resolve(canvas.toDataURL('image/jpeg', 0.82));
+                    };
+                    img.src = reader.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function handleSitePhotoFiles(fileList) {
+            if (!Array.isArray(quoteData.sitePhotos)) quoteData.sitePhotos = [];
+            const files = Array.from(fileList || []).filter(f => /^image\//.test(f.type) || /\.(jpe?g|png|webp|gif|bmp)$/i.test(f.name));
+            if (!files.length) return;
+            const room = SITE_PHOTO_MAX - quoteData.sitePhotos.length;
+            if (room <= 0) { alert('⚠️ Maximum of 6 site photos. Please remove one first.'); return; }
+            if (files.length > room) alert(`⚠️ Only ${room} more photo(s) can be added (maximum 6). The first ${room} will be used.`);
+            const problems = [];
+            for (const f of files.slice(0, room)) {
+                try {
+                    const data = await prepareSitePhoto(f);
+                    if (quoteData.sitePhotos.length < SITE_PHOTO_MAX) quoteData.sitePhotos.push({ data: data, caption: '' });
+                }
+                catch (e) { problems.push(e.message); }
+            }
+            renderSitePhotos();
+            hasUnsavedChanges = true;
+            try { autoSave(); } catch (e) { console.error(e); }
+            if (problems.length) alert('⚠️ Some photos could not be added:\n' + problems.join('\n'));
+        }
+
+        function removeSitePhoto(index) {
+            if (!Array.isArray(quoteData.sitePhotos)) return;
+            quoteData.sitePhotos.splice(index, 1);
+            renderSitePhotos();
+            hasUnsavedChanges = true;
+            try { autoSave(); } catch (e) { console.error(e); }
+        }
+
+        function clearSitePhotos() {
+            if (!quoteData.sitePhotos || !quoteData.sitePhotos.length) return;
+            if (!confirm('Remove all site photos from this quote?')) return;
+            quoteData.sitePhotos = [];
+            renderSitePhotos();
+            hasUnsavedChanges = true;
+            try { autoSave(); } catch (e) { console.error(e); }
+        }
+
+        function updateSitePhotoCaption(index, value) {
+            if (quoteData.sitePhotos && quoteData.sitePhotos[index]) quoteData.sitePhotos[index].caption = value;
+        }
+
+        // PDF page: 2 per row, up to 3 rows; each photo fitted into its box at its real shape
+        function drawSitePhotosPage(pdf, leftMargin, rightMargin) {
+            const photos = (quoteData.sitePhotos || []).filter(p => p && p.data);
+            if (!photos.length) return false;
+            pdf.addPage();
+            let y = 18;
+            const width = rightMargin - leftMargin;
+            pdf.setFillColor(30, 37, 104); // FitOut navy
+            pdf.rect(leftMargin, y, width, 8, 'F');
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(11);
+            pdf.text('OPTIONAL SITE PHOTOS', leftMargin + 3, y + 5.6);
+            y += 13;
+            pdf.setTextColor(110, 110, 110);
+            pdf.setFont('helvetica', 'italic');
+            pdf.setFontSize(8.5);
+            pdf.text('For reference only - sample photos or actual site works.', leftMargin, y);
+            y += 5;
+
+            const gapX = 8;
+            const boxW = (width - gapX) / 2;          // 86 mm
+            const boxH = 68, rowH = boxH + 12;         // 3 rows fit above the page footer
+            photos.slice(0, SITE_PHOTO_MAX).forEach((p, i) => {
+                const col = i % 2, row = Math.floor(i / 2);
+                const bx = leftMargin + col * (boxW + gapX);
+                const top = y + row * rowH;
+                // Fit the whole photo inside the box (no cropping), centred
+                let w = boxW, h = boxH;
+                try {
+                    const props = pdf.getImageProperties(p.data);
+                    const r = Math.min(boxW / props.width, boxH / props.height);
+                    w = props.width * r; h = props.height * r;
+                } catch (e) { /* fall back to full box */ }
+                const x = bx + (boxW - w) / 2, iy = top + (boxH - h) / 2;
+                try {
+                    const fmt = /^data:image\/png/i.test(p.data) ? 'PNG' : 'JPEG';
+                    pdf.addImage(p.data, fmt, x, iy, w, h);
+                    pdf.setDrawColor(210, 210, 210);
+                    pdf.setLineWidth(0.2);
+                    pdf.rect(x, iy, w, h);
+                } catch (e) {
+                    console.error('Site photo', i + 1, 'could not be drawn', e);
+                    pdf.setFillColor(240, 240, 240);
+                    pdf.rect(bx, top, boxW, boxH, 'F');
+                }
+                pdf.setTextColor(60, 60, 60);
+                pdf.setFont('helvetica', 'normal');
+                pdf.setFontSize(8.5);
+                const cap = (p.caption || '').replace(/[^\x20-\x7E]/g, '').replace(/\s+/g, ' ').trim();
+                const label = 'Photo ' + (i + 1) + (cap ? ': ' + cap : '');
+                const lines = pdf.splitTextToSize(label, boxW).slice(0, 2);
+                pdf.text(lines, bx + boxW / 2, top + boxH + 4.5, { align: 'center' });
+            });
+            pdf.setTextColor(0, 0, 0);
+            pdf.setDrawColor(0, 0, 0);
+            return true;
         }
 
         function duplicateQuote() {
@@ -3358,6 +3767,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
             quoteData.settings.payableName = document.getElementById('settingsPayableName').value;
             quoteData.settings.personInCharge = document.getElementById('settingsPersonInCharge').value;
             quoteData.settings.personInChargeDesignation = document.getElementById('settingsPersonInChargeDesignation').value;
+            saveMasterSettings(); // V2.8: keep settings for every future quote
             closeSettingsModal();
             generateSummary(); // Update summary immediately to show changes
             autoSave();
@@ -3413,6 +3823,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                     }
                     
                     console.log('Logo uploaded successfully:', side, file.name);
+                    saveMasterSettings();
                     alert(`✅ Logo ${side === 'left' ? '1 (Left)' : '2 (Right)'} uploaded successfully!`);
                     autoSave();
                 } catch (error) {
@@ -3435,6 +3846,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                     document.getElementById('logoRightPreview').style.display = 'none';
                     document.getElementById('logoRightUpload').value = '';
                 }
+                saveMasterSettings();
                 alert('Logo removed');
                 console.log('Logo removed:', side);
                 autoSave();
@@ -3482,6 +3894,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                     document.getElementById('qrCodeInfo').textContent = `${file.name} (${(file.size/1024).toFixed(1)} KB)`;
                     
                     console.log('QR Code uploaded successfully:', file.name);
+                    saveMasterSettings();
                     alert('✅ QR Code uploaded successfully!');
                     autoSave();
                 } catch (error) {
@@ -3498,6 +3911,7 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
                 quoteData.qrCode = null;
                 document.getElementById('qrCodePreview').style.display = 'none';
                 document.getElementById('qrCodeUpload').value = '';
+                saveMasterSettings();
                 alert('QR Code removed');
                 console.log('QR Code removed');
                 autoSave();
@@ -3556,14 +3970,23 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
         // current quote, with every amount left editable since billing
         // can differ from the original quotation.
         // ═══════════════════════════════════════════════════════════
+        let memoryInvoiceCounter = 0; // V2.9: used only if browser storage is blocked
+        function readInvoiceCounter() {
+            try { return parseInt(localStorage.getItem('fitout_eng_invoice_counter') || '0', 10) || 0; }
+            catch (e) { return memoryInvoiceCounter; }
+        }
         function peekNextInvoiceNumber() {
-            const counter = parseInt(localStorage.getItem('fitout_eng_invoice_counter') || '0', 10);
-            return 'INV-FE-' + String(counter + 1).padStart(4, '0');
+            return 'INV-FE-' + String(readInvoiceCounter() + 1).padStart(4, '0');
         }
 
-        function commitInvoiceNumber() {
-            const counter = parseInt(localStorage.getItem('fitout_eng_invoice_counter') || '0', 10);
-            localStorage.setItem('fitout_eng_invoice_counter', String(counter + 1));
+        // V2.9: moves the counter up to the number just used (auto or typed
+        // in by hand), so the same number is never issued twice.
+        function commitInvoiceNumber(invNumber) {
+            const m = /^INV-FE-(\d+)$/i.exec(String(invNumber || '').trim());
+            const used = m ? parseInt(m[1], 10) : 0;
+            const next = Math.max(readInvoiceCounter(), used);
+            memoryInvoiceCounter = next;
+            try { localStorage.setItem('fitout_eng_invoice_counter', String(next)); } catch (e) { /* kept in memory */ }
         }
 
         // ─────────────────────────────────────────────────────────
@@ -4062,13 +4485,12 @@ Paint selection based on Nippon 5000 series. Any other series will be quoted sep
 
                 deliverFile(pdf.output('blob'), filename);
 
-                const isNewAutoNumber = (invNumber === peekNextInvoiceNumber());
                 saveOrUpdateInvoiceRecord({
                     invoiceNo: invNumber, date: invDateRaw, quoteRef, voRef, companyName, companyAddress,
                     attn, hp, email, title, siteAddress, description,
                     totalContract, amountBilled, previousPayments, balanceDue, createdAt: Date.now()
                 });
-                if (isNewAutoNumber) commitInvoiceNumber();
+                commitInvoiceNumber(invNumber);
 
                 closeInvoiceModal();
                 console.log('Invoice generated:', invNumber);
@@ -4253,7 +4675,7 @@ function printClientQuote() {
                 );
                 
                 if (validItems.length > 0) {
-                    if (yPos > pageHeight - 40) {
+                    if (yPos > pageHeight - 55) { // V2.9: keep heading with its first item
                         pdf.addPage();
                         yPos = 20;
                     }
@@ -4324,7 +4746,7 @@ function printClientQuote() {
             isFinite(quoteData.painting.sell) &&
             quoteData.painting.sell > 0) {
             
-            if (yPos > pageHeight - 40) {
+            if (yPos > pageHeight - 55) { // V2.9: keep heading with its first item
                 pdf.addPage();
                 yPos = 20;
             }
@@ -4370,7 +4792,7 @@ function printClientQuote() {
             );
             
             if (validMiscItems.length > 0) {
-                if (yPos > pageHeight - 40) {
+                if (yPos > pageHeight - 55) { // V2.9: keep heading with its first item
                     pdf.addPage();
                     yPos = 20;
                 }
@@ -4429,7 +4851,7 @@ function printClientQuote() {
             );
             
             if (validOptionalItems.length > 0) {
-                if (yPos > pageHeight - 40) {
+                if (yPos > pageHeight - 55) { // V2.9: keep heading with its first item
                     pdf.addPage();
                     yPos = 20;
                 }
@@ -4488,7 +4910,7 @@ function printClientQuote() {
             );
             
             if (validDiscountItems.length > 0) {
-                if (yPos > pageHeight - 40) {
+                if (yPos > pageHeight - 55) { // V2.9: keep heading with its first item
                     pdf.addPage();
                     yPos = 20;
                 }
@@ -4795,6 +5217,9 @@ function printClientQuote() {
         pdf.setTextColor(128, 0, 0); // maroon
         pdf.text('FitOut Engineering & Construction Pte Ltd', rightMargin, yPos, { align: 'right' });
         pdf.setTextColor(0, 0, 0);
+
+        // V2.9: Optional Site Photos - extra last page, only if at least 1 photo
+        try { drawSitePhotosPage(pdf, leftMargin, rightMargin); } catch (e) { console.error('Site photos page failed:', e); }
         
         // ADD HEADERS AND FOOTERS TO ALL PAGES
         const totalPages = pdf.internal.getNumberOfPages();
@@ -4841,6 +5266,7 @@ function printClientQuote() {
         alert('❌ Error generating PDF: ' + error.message + '\n\nCheck browser console (F12) for details.');
     }
 }
+
 
 
 
@@ -5085,11 +5511,13 @@ function printClientQuote() {
                 <td class="amt"><strong>$${gp.toFixed(2)}</strong></td>
                 <td class="pct"><strong>${gm}%</strong></td>
             </tr></tbody></table>`;
-            
+
+
             container.innerHTML = html;
         }
 
 // V86 PDF COSTING REPORT FUNCTION
+
 function printCosting() {
     console.log('=== PRINT COSTING STARTED ===');
     console.log('Quote Data:', quoteData);
@@ -5561,7 +5989,8 @@ function printCosting() {
         pdf.setTextColor(grandProfit >= 0 ? 0 : 255, grandProfit >= 0 ? 128 : 0, 0);
         pdf.text(`$${grandProfit.toFixed(2)}`, colX.profit, yPos);
         pdf.text(`${grandMargin.toFixed(1)}%`, colX.margin, yPos);
-        
+        pdf.setTextColor(0, 0, 0);
+
         // MANAGEMENT APPROVAL SECTION
         pdf.setTextColor(0, 0, 0);
         yPos += 20; // Space after Grand Total
@@ -5926,7 +6355,7 @@ function printSuppliers() {
         pdf.setFontSize(12);
         pdf.setFont('helvetica', 'bold');
         pdf.text('TOTAL SUMMARY', leftMargin + 2, yPos + 5.5);
-        yPos += 10;
+        yPos += 15; // V2.9: first line now sits below the bar (was overlapping)
         
         const grandDiff = grandTotalBudget - grandTotalActual;
         
@@ -5975,7 +6404,7 @@ function printSuppliers() {
         
         // Generate filename
         const clientName = (quoteData.client.name || 'Client').replace(/[^a-zA-Z0-9]/g, '_');
-        const filename = `Suppliers_${clientName}_${quoteRef}_${today.toISOString().split('T')[0]}.pdf`;
+        const filename = `Suppliers_${clientName}_${quoteRef}_${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}.pdf`; // V2.9: local date (was UTC, showed yesterday before 8am SG time)
         
         console.log('Saving PDF:', filename);
         deliverFile(pdf.output('blob'), filename);
@@ -6014,6 +6443,41 @@ function exitProgram() {
     }
 }
 
+    </script>
+    <!-- PWA: service worker + Install App button -->
+    <script>
+        (function () {
+            if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+                window.addEventListener('load', function () {
+                    navigator.serviceWorker.register('service-worker.js').catch(function (err) {
+                        console.error('Service worker registration failed:', err);
+                    });
+                });
+            }
+            var deferredPrompt = null;
+            window.addEventListener('beforeinstallprompt', function (e) {
+                e.preventDefault();
+                deferredPrompt = e;
+                var btn = document.getElementById('installAppBtn');
+                if (btn) btn.style.display = 'inline-block';
+            });
+            window.installPwaApp = function () {
+                if (!deferredPrompt) {
+                    alert('To install: iPhone - tap Share then "Add to Home Screen" (in Safari). Android - tap the 3-dot menu then "Install app" (in Chrome).');
+                    return;
+                }
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.finally(function () {
+                    deferredPrompt = null;
+                    var btn = document.getElementById('installAppBtn');
+                    if (btn) btn.style.display = 'none';
+                });
+            };
+            window.addEventListener('appinstalled', function () {
+                var btn = document.getElementById('installAppBtn');
+                if (btn) btn.style.display = 'none';
+            });
+        })();
     </script>
 </body>
 </html>
